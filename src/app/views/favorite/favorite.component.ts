@@ -14,7 +14,7 @@ export class FavoriteComponent implements OnInit{
 
   ngOnInit() {
     this.favoritesCats = this.favoriteService.getFavoritesCats();
-    console.log(this.favoritesCats);
+    // console.log(this.favoritesCats);
   }
 
 

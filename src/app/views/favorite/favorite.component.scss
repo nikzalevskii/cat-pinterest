@@ -2,6 +2,7 @@
   padding-top: 52px;
   padding-bottom: 31px;
   .container {
+    min-height: 100vh;
     .cat-cards {
       display: flex;
       flex-wrap: wrap;

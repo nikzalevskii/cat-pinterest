@@ -25,7 +25,7 @@ export class MainComponent implements OnInit {
     } else {
       this.fetchCats();
     }
-    console.log(this.cats);
+    // console.log(this.cats);
   }
 
   fetchCats(): void {
