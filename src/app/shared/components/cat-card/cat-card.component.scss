@@ -1,0 +1,26 @@
+.cat-card {
+  width: 225px;
+  height: 225px;
+  box-sizing: border-box;
+  position: relative;
+  background-color: orange;
+  transition: transform 0.2s ease-in-out;
+
+  .cat-card-favourite {
+    cursor: pointer;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+
+  }
+
+  .cat-card-image {
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  &:hover {
+    transform: scale(1.13);
+  }
+}
