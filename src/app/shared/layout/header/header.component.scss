@@ -9,6 +9,9 @@ header.header {
       margin: 0;
       padding: 0;
       display: flex;
+      @media screen and (max-width: 426px) {
+        justify-content: center;
+      }
       li {
 
         a {

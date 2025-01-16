@@ -1,7 +1,7 @@
 <section class="main">
   <div class="container" (scroll)="onScroll()">
     <div class="cat-cards">
-      <app-cat-card *ngFor="let cat of cats" [cat]="cat"></app-cat-card>
+      <app-cat-card *ngFor="let cat of (cats$ | async)" [cat]="cat"></app-cat-card>
     </div>
     <div class="add-cards">
       ... загружаем еще котиков ...

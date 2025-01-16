@@ -5,8 +5,13 @@
     .cat-cards {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      column-gap: 47px;
+      justify-content: inherit;
       row-gap: 52px;
+      @media screen and (max-width: 1350px) {
+        column-gap: 47px;
+        justify-content: center;
+      }
     }
     .add-cards {
       cursor: pointer;

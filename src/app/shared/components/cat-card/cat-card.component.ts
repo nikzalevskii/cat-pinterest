@@ -1,29 +1,45 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ICat} from "../../../../interfaces/icat";
-import {FavoritesService} from "../../services/favorites.service";
+import {Store} from "@ngrx/store";
+import {toggleLike} from "../../../store/cats/cats.actions";
+import {selectCatsWithLikes} from "../../../store/cats/cats.selectors";
+import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-cat-card',
   templateUrl: './cat-card.component.html',
   styleUrls: ['./cat-card.component.scss']
 })
-export class CatCardComponent implements OnInit, AfterViewInit {
+export class CatCardComponent implements OnInit, OnDestroy {
   @Input() cat!: ICat;
-  isLiked: boolean = false;
-  isMouseOver: boolean = false;
-  isImageHovered: boolean = false;
+  public isLiked: boolean = false;
+  public isImageHovered: boolean = false;
+  private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private favoriteService:FavoritesService) {
+  constructor(private store: Store) {
   }
 
   ngOnInit() {
-    if (this.cat.like) {
-      this.isLiked = true;
-    }
+    this.store.select(selectCatsWithLikes)
+      .pipe(
+        takeUntil(this._destroy$)
+      )
+      .subscribe(
+        (cats: ICat[]) => {
+          const currentCat = cats.find(c => c.id === this.cat.id);
+          if (currentCat) {
+            this.isLiked = currentCat.like !== undefined ? currentCat.like : false;
+          }
+        },
+        error => {
+          console.error('Ошибка при получении данных:', error);
+        }
+      )
   }
 
-  ngAfterViewInit() {
-    // console.log(this.cat);
+  ngOnDestroy():void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   onMouseEnter(): void {
@@ -35,12 +51,7 @@ export class CatCardComponent implements OnInit, AfterViewInit {
   }
 
   toggleLike(): void {
-    this.isLiked = !this.isLiked;
-    if (this.isLiked) {
-      this.favoriteService.addFavorite(this.cat);
-    } else {
-      this.favoriteService.removeFromFavorites((this.cat.id))
-    }
+    this.store.dispatch(toggleLike({cat: this.cat}));
   }
 
 }

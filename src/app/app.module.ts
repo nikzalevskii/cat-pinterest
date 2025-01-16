@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -10,6 +10,11 @@ import { CatCardComponent } from './shared/components/cat-card/cat-card.componen
 import {HttpClientModule} from "@angular/common/http";
 import { FavoriteComponent } from './views/favorite/favorite.component';
 import {RouterModule} from "@angular/router";
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
+import {CatsEffects} from "./store/cats/cats.effects";
 
 @NgModule({
   declarations: [
@@ -24,7 +29,12 @@ import {RouterModule} from "@angular/router";
     BrowserModule,
     HttpClientModule,
     RouterModule,
-    AppRoutingModule
+    AppRoutingModule,
+    StoreModule.forRoot(reducers, {
+      metaReducers
+    }),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
+    EffectsModule.forRoot([CatsEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

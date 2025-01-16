@@ -8,13 +8,13 @@ import {ICat} from "../../../interfaces/icat";
   providedIn: 'root'
 })
 export class CatService {
-  private apiUrl:string = environment.apiUrl;
-  private apiKey :string = environment.apiKey;
+  private _apiUrl:string = environment.apiUrl;
+  private _apiKey :string = environment.apiKey;
   constructor(private http: HttpClient) { }
 
-  getCats(page:number, limit: number):Observable<ICat[]> {
-    const headers = {'x-api-key': this.apiKey}
-    return this.http.get<ICat[]>(`${this.apiUrl}?page=${page}&limit=${limit}`, {headers})
+  fetchCats(page:number, limit: number):Observable<ICat[]> {
+    const headers = {'x-api-key': this._apiKey}
+    return this.http.get<ICat[]>(`${this._apiUrl}?page=${page}&limit=${limit}`, {headers})
   }
 
 }

@@ -1,7 +1,10 @@
 import {Component, HostListener, OnInit} from '@angular/core';
-import {CatService} from "../../shared/services/cat.service";
-import {map, switchMap} from "rxjs";
+import {Store} from "@ngrx/store";
+import {Observable} from "rxjs";
 import {ICat} from "../../../interfaces/icat";
+import {selectAllCats} from "../../store/cats/cats.selectors";
+import {loadCats, setCatsFromLocalStorage} from "../../store/cats/cats.actions";
+import {LOCALE_STORAGE_KEY} from "../../shared/constants/app-constants";
 
 @Component({
   selector: 'app-main',
@@ -9,56 +12,35 @@ import {ICat} from "../../../interfaces/icat";
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  cats:ICat[] = [];
-  loading:boolean = false;
-  page:number = 1;
-  limit:number = 15;
-  hasMore:boolean = true;
+  public cats: ICat[] = [];
+  public loading: boolean = false;
+  public cats$: Observable<ICat[]> = this.store.select(selectAllCats);
 
-  constructor(private catService: CatService) {
+  constructor(private store: Store) {
   }
 
   ngOnInit(): void {
-    const storedCats = JSON.parse(localStorage.getItem('cats') || '[]');
-    if (storedCats.length > 0) {
-      this.cats = storedCats;
+    const storedCats = this.loadCatsFromLocalStorage();
+    if (storedCats && storedCats.length > 0) {
+      this.store.dispatch(setCatsFromLocalStorage({cats: storedCats}))
     } else {
-      this.fetchCats();
+      this.store.dispatch(loadCats());
     }
-    // console.log(this.cats);
   }
 
-  fetchCats(): void {
-    if (!this.hasMore || this.loading) return;
-
-    this.loading = true;
-    this.catService.getCats(this.page, this.limit)
-      .pipe(
-        map((newCats:ICat[]) => {
-          this.page++;
-          return newCats;
-        })
-      )
-      .subscribe((newCats:ICat[]) => {
-        if (newCats.length < this.limit) {
-          this.hasMore = false;
-        }
-        const newCatsFiltered = newCats.filter(newCat => !this.cats.some(cat => cat.id === newCat.id));
-
-        this.cats = [...this.cats, ...newCatsFiltered];
-        this.loading = false;
-        localStorage.setItem('cats', JSON.stringify(this.cats));
-        console.log('Коты успешно загружены:', this.cats);
-      })
+  private loadCatsFromLocalStorage() {
+    const storedCats = localStorage.getItem(LOCALE_STORAGE_KEY);
+    return storedCats ? JSON.parse(storedCats) : [];
   }
+
 
   @HostListener('window:scroll', [])
-  onScroll() {
-    const scrollPosition = window.scrollY + window.innerHeight;
-    const pageHeight = document.documentElement.scrollHeight;
+  onScroll():void {
+    const scrollPosition:number = window.scrollY + window.innerHeight;
+    const pageHeight:number = document.documentElement.scrollHeight;
 
     if (scrollPosition >= pageHeight - 10 && !this.loading) {
-      this.fetchCats();
+      this.store.dispatch(loadCats());
     }
   }
 

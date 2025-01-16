@@ -3,12 +3,17 @@
     <nav>
       <ul>
         <li>
-          <a routerLink="/" routerLinkActive="active">Все котики</a> <!-- Сделали [''] вместо '/' -->
-<!--          <a routerLink="/">Все котики</a>-->
+          <a
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >Все котики</a>
         </li>
         <li>
-          <a routerLink="/favorites" routerLinkActive="active">Любимые котики</a> <!-- Используем ['favorites'] -->
-<!--          <a routerLink="/favorites">Любимые котики</a>-->
+          <a
+            routerLink="/favorites"
+            routerLinkActive="active"
+          >Любимые котики</a>
         </li>
       </ul>
     </nav>

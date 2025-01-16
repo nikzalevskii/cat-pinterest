@@ -6,6 +6,11 @@
   background-color: orange;
   transition: transform 0.2s ease-in-out;
 
+  @media screen and (max-width: 1350px) {
+    width: 200px;
+    height: 200px;
+  }
+
   .cat-card-favourite {
     cursor: pointer;
     position: absolute;
@@ -21,6 +26,11 @@
     background-position: center;
   }
   &:hover {
+    box-shadow:
+      0 8px 12px rgba(0, 0, 0, 0.2),
+      -3px 0 10px rgba(0, 0, 0, 0.1),
+      3px 0 10px rgba(0, 0, 0, 0.1),
+      0 -1px 5px rgba(0, 0, 0, 0.1);
     transform: scale(1.13);
   }
 }
