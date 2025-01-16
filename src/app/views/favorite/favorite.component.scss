@@ -6,7 +6,8 @@
     .cat-cards {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      column-gap: 31px;
+      justify-content: inherit;
       row-gap: 52px;
     }
     .add-cards {
