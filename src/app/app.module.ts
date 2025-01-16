@@ -15,6 +15,9 @@ import { reducers, metaReducers } from './store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 import {CatsEffects} from "./store/cats/cats.effects";
+import { LoaderComponent } from './shared/components/loader/loader.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -23,18 +26,21 @@ import {CatsEffects} from "./store/cats/cats.effects";
     HeaderComponent,
     MainComponent,
     CatCardComponent,
-    FavoriteComponent
+    FavoriteComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     RouterModule,
+    MatProgressSpinnerModule,
     AppRoutingModule,
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
-    EffectsModule.forRoot([CatsEffects])
+    EffectsModule.forRoot([CatsEffects]),
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

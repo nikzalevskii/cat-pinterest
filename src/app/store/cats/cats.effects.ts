@@ -6,34 +6,43 @@ import {catchError, map, mergeMap, Observable, of, tap} from "rxjs";
 import {Action} from "@ngrx/store";
 import {ICat} from "../../../interfaces/icat";
 import {LOCALE_STORAGE_KEY} from "../../shared/constants/app-constants";
+import {LoaderService} from "../../shared/services/loader.service";
 
 @Injectable()
 export class CatsEffects {
   public page: number = 1;
   public limit: number = 15;
 
-  constructor(private action$: Actions, private catService: CatService) {
+  constructor(private action$: Actions,
+              private catService: CatService,
+              private loaderService: LoaderService) {
   }
 
   loadCats$ = createEffect((): Observable<Action> => {
     return this.action$.pipe(
       ofType(loadCats),
-      mergeMap(() =>
-        this.catService.fetchCats(this.page, this.limit).pipe(
+      mergeMap((action) => {
+        const currentPage = action.page;
+        this.loaderService.show();
+        return this.catService.fetchCats(currentPage, this.limit).pipe(
           map((cats: ICat[]) => {
             const storedCats = JSON.parse(localStorage.getItem(LOCALE_STORAGE_KEY) || '[]');
             const updatedCats: ICat[] = [...storedCats, ...cats];
             localStorage.setItem(LOCALE_STORAGE_KEY, JSON.stringify(updatedCats))
+            this.page = currentPage;
+            this.loaderService.hide();
             return loadCatsSuccess({cats: updatedCats})
           }),
-          catchError(error => of(loadCatsFailure({error})))
+          catchError(error => {
+            this.loaderService.hide();
+            return of(loadCatsFailure({error}));
+          })
         )
-      )
+      })
     )
   })
 
-  toggleLike$ = createEffect(
-    () =>
+  toggleLike$ = createEffect(() =>
       this.action$.pipe(
         ofType(toggleLike),
         tap(({cat}) => {

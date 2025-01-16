@@ -5,7 +5,14 @@ import {CATS_KEY} from "../../shared/constants/app-constants";
 
 export const selectCatFeature = createFeatureSelector<CatState>(CATS_KEY);
 
+
 export const selectAllCats = createSelector(
+  selectCatFeature,
+  state => state.cats.filter((cat, index, self) =>
+    self.findIndex(c => c.id === cat.id) === index
+  )
+);
+export const selectCatsSuccess = createSelector(
   selectCatFeature,
   (state:CatState) => state.cats
 )

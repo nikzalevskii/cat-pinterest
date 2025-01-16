@@ -30,7 +30,8 @@ export const catsReducer = createReducer(
   })),
   on(loadCatsSuccess, (state, {cats}) => ({
     ...state,
-    cats: [...state.cats, ...cats],
+    // cats: [...state.cats, ...cats],
+    cats: [...new Set([...state.cats, ...cats])],
     loading: false,
     error: null
   })),
