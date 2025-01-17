@@ -10,10 +10,9 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       {path: '', component: MainComponent},
-      {path:'favorites', component: FavoriteComponent, pathMatch: "full"}
+      {path:'favorites', component: FavoriteComponent}
     ]
-  },
-  {path: '**', redirectTo: '/favorites', pathMatch: "full"}
+  }
 ];
 
 @NgModule({
